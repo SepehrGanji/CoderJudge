@@ -1,29 +1,27 @@
 package com.coder.judge;
 
-
-import org.apache.log4j.Logger;  
+import org.apache.log4j.Logger;
 
 import com.coder.judge.Queue.Queue;
+import com.coder.judge.Queue.SubmissionCallback;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.DeliverCallback;
 
 public class App {
-    static Logger log = Logger.getLogger(App.class.getName());  
+
+    private static final Logger log = Logger.getLogger(App.class.getName());
+
     public String getGreeting() {
-        log.info("testlog");
-        return "Hello World!";
+        return "App started!";
     }
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
         try {
             Channel channel = Queue.getChannel();
-            //channel.queueDeclare("test", false, false, false, null);
-            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-                String message = new String(delivery.getBody(), "UTF-8");
-                System.out.println(" [x] Received '" + message + "'");
-            };
-            channel.basicConsume("test", true, deliverCallback, consumerTag -> {
+            String queueName = System.getenv("SUBMISSION_QUEUE_NAME");
+            SubmissionCallback cb = new SubmissionCallback();
+
+            channel.basicConsume(queueName, true, cb, consumerTag -> {
             });
         } catch (Exception e) {
             e.printStackTrace();
