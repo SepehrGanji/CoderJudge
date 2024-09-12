@@ -6,16 +6,23 @@ import java.sql.SQLException;
 
 public class DB {
 
-    public static Connection connect() throws SQLException {
-        try {
-            var jdbcUrl = DatabaseConfig.getDbUrl();
-            var user = DatabaseConfig.getDbUsername();
-            var password = DatabaseConfig.getDbPassword();
-            return DriverManager.getConnection(jdbcUrl, user, password);
+    private static Connection _connection = null;
 
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            return null;
+    private DB() {
+    }
+
+    public static Connection connection() throws SQLException {
+        if (_connection == null || _connection.isClosed()) {
+            try {
+                var jdbcUrl = DatabaseConfig.getDbUrl();
+                var user = DatabaseConfig.getDbUsername();
+                var password = DatabaseConfig.getDbPassword();
+                _connection = DriverManager.getConnection(jdbcUrl, user, password);
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+                throw e;
+            }
         }
+        return _connection;
     }
 }

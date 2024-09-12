@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.log4j.Logger;
 
+import com.coder.judge.DB.SubmissionEntity;
 import com.coder.judge.Model.Submission;
 import com.coder.judge.Serializer.SubmissionSerializer;
 import com.rabbitmq.client.DeliverCallback;
@@ -18,7 +19,9 @@ public class SubmissionCallback implements DeliverCallback {
         try {
             String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
             Submission submission = SubmissionSerializer.getInstance().deserialize(message);
-            log.info(submission.getId());
+            
+            SubmissionEntity.getInstance().insert(submission);
+            log.info("Saved submission: " + submission.getId());
         } catch (Exception e) {
             e.printStackTrace();
         }
