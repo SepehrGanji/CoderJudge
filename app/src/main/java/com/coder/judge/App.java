@@ -20,7 +20,7 @@ public class App {
             Channel channel = Queue.getChannel();
             String queueName = System.getenv("SUBMISSION_QUEUE_NAME");
             SubmissionCallback cb = new SubmissionCallback();
-
+            
             channel.basicConsume(queueName, true, cb, consumerTag -> {
             });
         } catch (Exception e) {

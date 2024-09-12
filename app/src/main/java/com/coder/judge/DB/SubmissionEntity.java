@@ -22,11 +22,12 @@ public class SubmissionEntity {
     public void insert(Submission submission) {
         try {
             Connection conn = DB.connection();
-            String query = "INSERT INTO submissions (id, lang, code) VALUES (?, ?, ?)";
+            String query = "INSERT INTO submission (id, question, status, lang) VALUES (?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, submission.getId());
-            stmt.setString(2, submission.getLang());
-            stmt.setString(3, submission.getCode());
+            stmt.setInt(2, submission.getQuestion());
+            stmt.setString(3, "PENDING"); //TODO: Enum for status
+            stmt.setString(4, submission.getLang());
             stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
