@@ -13,6 +13,24 @@ public class SubmissionEntity {
     private SubmissionEntity() {
     }
 
+    private String getOneSubmission(String status) {
+        try {
+            Connection conn = DB.connection();
+            String query = "SELECT id FROM submission WHERE status = ? LIMIT 1";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, status);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString(1);
+            } else {
+                return "";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public static SubmissionEntity getInstance() {
         if (_instance == null) {
             _instance = new SubmissionEntity();
@@ -36,20 +54,11 @@ public class SubmissionEntity {
     }
 
     public String getOnePendingSubmission() {
-        try {
-            Connection conn = DB.connection();
-            String query = "SELECT id FROM submission WHERE status = 'PENDING' LIMIT 1";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getString(1);
-            } else {
-                return "";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
+        return getOneSubmission("PENDING");
+    }
+
+    public String getOneCompiledSubmission() {
+        return getOneSubmission("COMPILED");
     }
 
     public String getLang(String submissionId) {
@@ -66,6 +75,22 @@ public class SubmissionEntity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public int getQuestion(String submissionId) {
+        try {
+            Connection conn = DB.connection();
+            String query = "SELECT question FROM submission WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, submissionId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     public void updateStatus(String submissionId, String status) {
