@@ -23,7 +23,13 @@ public class SubmissionFS {
 
     public void save(Submission submission) {
         Path folderPath = Path.of(rootPath, String.valueOf(submission.getId()));
-        Path filePath = Path.of(folderPath.toString(), "code.txt");
+        String format = "";
+        if(submission.getLang().equals("python")) {
+            format = "py";
+        } else if(submission.getLang().equals("cpp")) {
+            format = "cpp";
+        }
+        Path filePath = Path.of(folderPath.toString(), "code." + format);
         try {
             Files.createDirectories(folderPath);
             byte[] decodedBytes = Base64.getDecoder().decode(submission.getCode());

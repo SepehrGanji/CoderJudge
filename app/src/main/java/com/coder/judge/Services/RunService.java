@@ -2,8 +2,6 @@ package com.coder.judge.Services;
 
 import org.apache.log4j.Logger;
 
-import com.coder.judge.FileSystem.FileRunner;
-
 public class RunService implements Runnable {
 
     private static RunService _instance = null;
@@ -21,6 +19,6 @@ public class RunService implements Runnable {
 
     @Override
     public void run() {
-        FileRunner.getInstance().runFile("compile.py");
+        System.out.println("RunService...");
     }
 }

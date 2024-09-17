@@ -2,6 +2,7 @@ package com.coder.judge.FileSystem;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -20,16 +21,17 @@ public class FileRunner {
         return _instance;
     }
 
-    public int runFile(String name) {
+    public int runFile(String fileName, List<String> args) {
         try {
-            ProcessBuilder pb = new ProcessBuilder("python3", "other/" + name);
+            ProcessBuilder pb = new ProcessBuilder("python3", "other/" + fileName);
+            pb.command().addAll(args);
             pb.redirectErrorStream(true);
 
             Process process = pb.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                log.debug(line);
             }
             return process.waitFor();
         } catch (Exception e) {
