@@ -1,7 +1,8 @@
 import sys
 import docker
 import os
-import time
+import threading
+
 
 client = docker.from_env()
 
@@ -23,29 +24,29 @@ def run_test(lang, codePath, input, output):
         detach=True,
         mem_limit='7m',
     )
-    #TODO: time limit
-    #TODO: memory limit
+    def handle_container():
+        container.reload()
+        if container.status == 'running':
+            print("TIME-LIMIT")
+            container.kill()
+        else:
+            result = container.wait()
+            exit_code = result['StatusCode']
+            if exit_code == 137:
+                print("MEMORY-LIMIT")
+            elif exit_code != 0:
+                print("RUNTIME-ERROR")
+            else:
+                logs = container.logs(stdout=True, stderr=False).decode().strip();
+                if(logs == output):
+                    print("ACCEPT")
+                else:
+                    print("WRONG-ANSWER")
     
-    result = container.wait()
-    exit_code = result['StatusCode']
-    if exit_code == 137:
-        print("MEMORY LIMIT EXCEEDED!!")
-        return
-    elif exit_code != 0:
-        print("RUNTIME ERROR!!")
-        error_logs = container.logs(stdout=False, stderr=True).decode().strip()
-        print(error_logs)
-        return
+    timer = threading.Timer(2, handle_container)
+    timer.start()
     
-    logs = container.logs(stdout=True, stderr=False).decode().strip();
-    if(logs == output):
-        print("PASSED!!")
-    else:
-        print("FAILED!!")
-    
-
 def main():
-    print("**THE ULTIMATE CODE RUNNER**")
     lang = sys.argv[1]
     codePath = sys.argv[2]
     questionPath = sys.argv[3]
@@ -53,8 +54,6 @@ def main():
         input = open(questionPath + "/" + d + "/in.txt", "r").read()
         output = open(questionPath + "/" + d + "/out.txt", "r").read()
         run_test(lang, codePath, input, output)
-
-    
 
 if __name__ == "__main__":
     main()

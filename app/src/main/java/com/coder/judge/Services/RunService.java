@@ -1,5 +1,8 @@
 package com.coder.judge.Services;
 
+import java.io.BufferedReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -38,5 +41,20 @@ public class RunService implements Runnable {
         List<String> args = List.of(lang, codePath, questionPath);
         int stat = FileRunner.getInstance().runFile("run.py", args);
         log.info("Run status: " + stat);
+        try {
+            String outputFileName = "other/run.py.out";
+            BufferedReader reader = Files.newBufferedReader(Paths.get(outputFileName));
+            String line;
+            String mamad = "ACCEPT";
+            while ((line = reader.readLine()) != null) {
+                if(!"ACCEPT".equals(line)) {
+                    mamad = line;
+                    break;
+                }
+            }
+            log.info("Run result: " + mamad);
+        } catch (Exception e) {
+            log.error("Error in RunService: " + e.getMessage());
+        }
     }
 }
