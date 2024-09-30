@@ -35,7 +35,7 @@ public class CompileService implements Runnable {
         List<String> args = List.of(lang, fullPath);
         int stat = FileRunner.getInstance().runFile("compile.py", args);
         log.info("Compilation status: " + stat);
-        String status = stat == 0 ? "COMPILED" : "COMPILE_ERROR";
+        String status = stat == 0 ? "COMPILED" : "COMPILE-ERROR";
         SubmissionEntity.getInstance().updateStatus(submissionId, status);
     }
 }
