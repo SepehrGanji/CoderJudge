@@ -16,7 +16,7 @@ public class SubmissionEntity {
     private String getOneSubmission(String status) {
         try {
             Connection conn = DB.connection();
-            String query = "SELECT id FROM submission WHERE status = ? LIMIT 1";
+            String query = "SELECT id FROM submission WHERE status = ? ORDER BY id LIMIT 1";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, status);
             ResultSet rs = stmt.executeQuery();

@@ -32,27 +32,26 @@ public class RunService implements Runnable {
             log.debug("Nothing to run...");
             return;
         }
-        submissionId = "1";
         log.info("Running submission: " + submissionId);
         String lang = SubmissionEntity.getInstance().getLang(submissionId);
         String codePath = System.getenv("FILE_PATH") + "/S/" + submissionId;
         int question = SubmissionEntity.getInstance().getQuestion(submissionId);
         String questionPath = System.getenv("FILE_PATH") + "/Q/" + question;
         List<String> args = List.of(lang, codePath, questionPath);
-        int stat = FileRunner.getInstance().runFile("run.py", args);
-        log.info("Run status: " + stat);
+        FileRunner.getInstance().runFile("run.py", args);
         try {
             String outputFileName = "other/run.py.out";
             BufferedReader reader = Files.newBufferedReader(Paths.get(outputFileName));
             String line;
-            String mamad = "ACCEPT";
+            String run_status = "ACCEPT";
             while ((line = reader.readLine()) != null) {
                 if(!"ACCEPT".equals(line)) {
-                    mamad = line;
+                    run_status = line;
                     break;
                 }
             }
-            log.info("Run result: " + mamad);
+            log.info("Run status: " + run_status);
+            SubmissionEntity.getInstance().updateStatus(submissionId, run_status);
         } catch (Exception e) {
             log.error("Error in RunService: " + e.getMessage());
         }
