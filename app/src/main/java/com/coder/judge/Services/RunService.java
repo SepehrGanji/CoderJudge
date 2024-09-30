@@ -29,6 +29,7 @@ public class RunService implements Runnable {
             log.debug("Nothing to run...");
             return;
         }
+        submissionId = "1";
         log.info("Running submission: " + submissionId);
         String lang = SubmissionEntity.getInstance().getLang(submissionId);
         String codePath = System.getenv("FILE_PATH") + "/S/" + submissionId;

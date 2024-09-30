@@ -21,15 +21,27 @@ def run_test(lang, codePath, input, output):
         cmd,
         volumes=volumes,
         detach=True,
+        mem_limit='7m',
     )
     #TODO: time limit
     #TODO: memory limit
-    #TODO: runtime error
-    container.wait()
-    # Print logs
-    logs = container.logs()
-    print("LOGS", logs.decode())
-    container.remove()
+    
+    result = container.wait()
+    exit_code = result['StatusCode']
+    if exit_code == 137:
+        print("MEMORY LIMIT EXCEEDED!!")
+        return
+    elif exit_code != 0:
+        print("RUNTIME ERROR!!")
+        error_logs = container.logs(stdout=False, stderr=True).decode().strip()
+        print(error_logs)
+        return
+    
+    logs = container.logs(stdout=True, stderr=False).decode().strip();
+    if(logs == output):
+        print("PASSED!!")
+    else:
+        print("FAILED!!")
     
 
 def main():
