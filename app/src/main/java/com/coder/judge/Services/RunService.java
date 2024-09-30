@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.coder.judge.DB.QuestionEntity;
 import com.coder.judge.DB.SubmissionEntity;
 import com.coder.judge.FileSystem.FileRunner;
 
@@ -37,7 +38,9 @@ public class RunService implements Runnable {
         String codePath = System.getenv("FILE_PATH") + "/S/" + submissionId;
         int question = SubmissionEntity.getInstance().getQuestion(submissionId);
         String questionPath = System.getenv("FILE_PATH") + "/Q/" + question;
-        List<String> args = List.of(lang, codePath, questionPath);
+        int timeLimit = QuestionEntity.getInstance().getLimit(question, "timelimit");
+        int memoryLimit = QuestionEntity.getInstance().getLimit(question, "memlimit");
+        List<String> args = List.of(lang, codePath, questionPath, String.valueOf(timeLimit), String.valueOf(memoryLimit));
         FileRunner.getInstance().runFile("run.py", args);
         try {
             String outputFileName = "other/run.py.out";

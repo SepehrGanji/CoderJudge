@@ -6,7 +6,7 @@ import threading
 
 client = docker.from_env()
 
-def run_test(lang, codePath, input, output):
+def run_test(lang, codePath, input, output, time_limit, memory_limit):
     volumes = {codePath: {'bind': '/tmp', 'mode': 'ro'}}
     img = ""
     cmd = ""
@@ -22,7 +22,7 @@ def run_test(lang, codePath, input, output):
         cmd,
         volumes=volumes,
         detach=True,
-        mem_limit='7m',
+        mem_limit=memory_limit + "m",
     )
     def handle_container():
         container.reload()
@@ -43,17 +43,19 @@ def run_test(lang, codePath, input, output):
                 else:
                     print("WRONG-ANSWER")
     
-    timer = threading.Timer(2, handle_container)
+    timer = threading.Timer(time_limit, handle_container)
     timer.start()
     
 def main():
     lang = sys.argv[1]
     codePath = sys.argv[2]
     questionPath = sys.argv[3]
+    time_limit = int(sys.argv[4])
+    memory_limit = sys.argv[5]
     for d in os.listdir(questionPath):
         input = open(questionPath + "/" + d + "/in.txt", "r").read()
         output = open(questionPath + "/" + d + "/out.txt", "r").read()
-        run_test(lang, codePath, input, output)
+        run_test(lang, codePath, input, output, time_limit, memory_limit)
 
 if __name__ == "__main__":
     main()

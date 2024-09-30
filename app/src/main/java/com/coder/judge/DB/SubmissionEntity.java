@@ -13,6 +13,13 @@ public class SubmissionEntity {
     private SubmissionEntity() {
     }
 
+    public static SubmissionEntity getInstance() {
+        if (_instance == null) {
+            _instance = new SubmissionEntity();
+        }
+        return _instance;
+    }
+
     private String getOneSubmission(String status) {
         try {
             Connection conn = DB.connection();
@@ -29,13 +36,6 @@ public class SubmissionEntity {
             e.printStackTrace();
         }
         return "";
-    }
-
-    public static SubmissionEntity getInstance() {
-        if (_instance == null) {
-            _instance = new SubmissionEntity();
-        }
-        return _instance;
     }
 
     public void insert(Submission submission) {
