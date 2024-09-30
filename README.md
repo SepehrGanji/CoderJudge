@@ -18,17 +18,17 @@ You need `java` and `gradle` on your system to run this project.
 ### Environment file pattern
 The `.env` file must be placed in the root directory following the pattern described below.
 ```
-DB_URL=                                # database host address (including port)
-DB_USER=                             # database username
-DB_PASSWD=                       # database password
+DB_URL=                    # database host address (including port)
+DB_USER=                   # database username
+DB_PASSWD=                 # database password
 
-QUEUE_HOST=                     # queue host address (including port)
-QUEUE_USER=                      # queue username 
-QUEUE_PASSWD=                # queue password
+QUEUE_HOST=                # queue host address (including port)
+QUEUE_USER=                # queue username 
+QUEUE_PASSWD=              # queue password
 SUBMISSION_QUEUE_NAME=     # queue name for submissions
-RESULT_QUEUE_NAME=               # queue name for results
+RESULT_QUEUE_NAME=         # queue name for results
 
-FILE_PATH=                           # root filesystem path
+FILE_PATH=                 # root filesystem path
 ```
 
 ### Setup envirounment variables
